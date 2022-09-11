@@ -1,33 +1,33 @@
-class Node:
+from math import log2, floor
+class Tree:
     def __init__(self, data):
-        self.left = None
-        self.right = None
-        self.data = data
+        self.tree = [-1]*100
+        self.tree[1] = data
+        self.n = 1
 
     def insert(self, data):
-        if self.data:
-            if self.left is None:
-                self.left = Node(data)
-            elif self.right is None:
-                self.right = Node(data)
-            else:
-                self.left.insert(data)
-        else:
-            self.data = data
+        self.n+=1
+        self.tree[self.n] = data
 
-    def PrintTree(self):
-        if self.left:
-            self.left.PrintTree()
-        print(self.data)
-        if self.right:
-            self.right.PrintTree()
+    def printTree(self):
+        i=1
+        level=1
+        while i<=self.n:
+            space=((2**(floor(log2(self.n))))*10)//level
+            for _ in range(level):
+                if self.tree[i] == -1:
+                    break 
+                print(str(self.tree[i]).center(space), end='')
+                i+=1
+            print('\n\n')
+            level*=2
+        print()
 
 
-# Use the insert method to add nodes
-root = Node(1)
+root = Tree(1)
 root.insert(3)
 root.insert(5)
 root.insert(7)
 root.insert(9)
 root.insert(11)
-root.PrintTree()
+root.printTree()
