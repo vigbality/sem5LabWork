@@ -1,87 +1,75 @@
-class Node:
+from math import log2, floor
+class Tree:
     def __init__(self, data):
-        self.left = None
-        self.right = None
-        self.data = data
+        self.tree = [-1]*100
+        self.tree[1] = data
+        self.n = 1
 
     def insert(self, data):
-        if self.data:
-            if self.left is None:
-                self.left = Node(data)
-            elif self.right is None:
-                self.right = Node(data)
-            else:
-                if not self.left.isFull() or self.right.isFull():
-                    self.left.insert(data)
-                else:
-                    self.right.insert(data)
-        else:
-            self.data = data
+        self.n+=1
+        self.tree[self.n] = data
 
-    def isFull(self):
-        if self.left is not None and self.right is not None:
-            return True
-        else:
-            return False
+    def printTree(self):
+        i=1
+        level=1
+        while i<=self.n:
+            space=((2**(floor(log2(self.n))))*10)//level
+            for _ in range(level):
+                if self.tree[i] == -1:
+                    break 
+                print(str(self.tree[i]).center(space), end='')
+                i+=1
+            print('\n\n')
+            level*=2
+        print()
 
-    def PrintTree(self):
-        if self.left:
-            self.left.PrintTree()
-        print(self.data)
-        if self.right:
-            self.right.PrintTree()
-
-
-def bfs(initial, goal):
-    if initial.data == goal.data:
-        print(initial.data)
-        return
-    else:
-        if initial.left is not None:
-            if initial.left.data == goal.data:
-                print(initial.left.data)
-                return
-            else:
-                print(initial.left.data)
-        if initial.right is not None:
-            if initial.right.data == goal.data:
-                print(initial.right.data)
-                return
-            else:
-                print(initial.right.data)
-        if initial.left is not None:
-            bfs(initial.left, goal)
-        else:
+    def bfs(self,initial, goal):
+        visited={}
+        indice={}
+        queue=[]
+        for i in range(1,self.n+1):
+            visited[self.tree[i]]=False
+            indice[self.tree[i]]=i
+        queue.append(initial)
+        visited[initial] = True
+        while queue:
+            node = queue.pop(0)
+            print(node, end=' ')
+            if node==goal:
+                break
+            x=indice[node]
+            if self.tree[x*2] != -1 and visited[self.tree[x*2]]==False:
+                queue.append(self.tree[x*2])
+                visited[self.tree[x*2]]=True
+            if self.tree[x*2+1] != -1 and visited[self.tree[x*2+1]]==False:
+                queue.append(self.tree[x*2+1])
+                visited[self.tree[x*2+1]]=True
+        print()
+    
+    def dfs(self, initial, goal):
+        if initial == goal:
+            print(goal)
             return
+        else:
+            print(initial, end=' ')
+            x=self.tree.index(initial)
+            if self.tree[x*2] != -1:
+                self.dfs(self.tree[x*2],goal)
+            if self.tree[x*2+1] != -1:
+                self.dfs(self.tree[x*2+1],goal)
+            
 
 
-def dfs(initial, goal):
-    if initial.data == goal.data:
-        print(initial.data)
-        return
-    else:
-        if initial.left is not None:
-            if initial.left.data == goal.data:
-                print(initial.left.data)
-                return
-            else:
-                print(initial.left.data)
-                dfs(initial.left, goal)
-        if initial.right is not None:
-            if initial.right.data == goal.data:
-                print(initial.right.data)
-                return
-            else:
-                print(initial.right.data)
-                dfs(initial.right, goal)
 
-
-# Use the insert method to add nodes
-root = Node(1)
+root = Tree(1)
 root.insert(3)
 root.insert(5)
 root.insert(7)
 root.insert(9)
 root.insert(11)
-# root.PrintTree()
-bfs(root, Node(11))
+print('\n\nTree Structure:')
+root.printTree()
+print('Using BFS:')
+root.bfs(1,11)
+print('\n\nUsing DFS:')
+root.dfs(1,11)
